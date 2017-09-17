@@ -1,14 +1,15 @@
 #ifndef PID_H
 #define PID_H
 
+#include <chrono>
+
 class PID {
 public:
   /*
   * Errors
   */
-  double p_error;
-  double i_error;
-  double d_error;
+  double prev_cte;
+  double total_cte;
 
   /*
   * Coefficients
@@ -16,6 +17,9 @@ public:
   double Kp;
   double Ki;
   double Kd;
+  
+  bool initialized;
+  std::chrono::high_resolution_clock::time_point prev_t;
 
   /*
   * Constructor
@@ -30,17 +34,10 @@ public:
   /*
   * Initialize PID.
   */
-  void Init(double Kp, double Ki, double Kd);
+  void Init(double Kp, double Kd, double Ki);
 
-  /*
-  * Update the PID error variables given cross track error.
-  */
-  void UpdateError(double cte);
 
-  /*
-  * Calculate the total PID error.
-  */
-  double TotalError();
+  double getMeDirection(double cte, double speed, double angle);
 };
 
 #endif /* PID_H */
